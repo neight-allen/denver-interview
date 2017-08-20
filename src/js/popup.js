@@ -1,4 +1,4 @@
-import "../css/popup.css";
-import hello from "./popup/example";
-
-hello();
+import "../css/google-font"
+import "../css/normalize"
+import "../css/skeleton"
+import "./main"

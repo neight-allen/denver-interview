@@ -20,7 +20,6 @@ var options = {
   entry: {
     popup: path.join(__dirname, "src", "js", "popup.js"),
     options: path.join(__dirname, "src", "js", "options.js"),
-    background: path.join(__dirname, "src", "js", "background.js")
   },
   output: {
     path: path.join(__dirname, "build"),
@@ -31,6 +30,11 @@ var options = {
       {
         test: /\.css$/,
         loader: "style-loader!css-loader",
+        exclude: /node_modules/
+      },
+      {
+        test: /\.scss$/,
+        loader: "style-loader!css-loader!sass-loader",
         exclude: /node_modules/
       },
       {
@@ -46,7 +50,8 @@ var options = {
     ]
   },
   resolve: {
-    alias: alias
+    alias: alias,
+    extensions: [".js", ".json", ".css", ".scss"]
   },
   plugins: [
     // expose and write the allowed env vars on the compiled bundle
@@ -62,11 +67,6 @@ var options = {
       template: path.join(__dirname, "src", "options.html"),
       filename: "options.html",
       chunks: ["options"]
-    }),
-    new HtmlWebpackPlugin({
-      template: path.join(__dirname, "src", "background.html"),
-      filename: "background.html",
-      chunks: ["background"]
     }),
     new WriteFilePlugin()
   ]

@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById("feed").onclick = function(){
       if(requester.user == undefined)
         return DomManipulator.resultsStatus("Please enter a user to view feed")
-      DomManipulator.resultsStatus('Performing JIRA search for ' + requester.jiraQuery)
+      DomManipulator.resultsStatus('Getting feed for ' + requester.feedURL)
 
       requester.fetchFeed()
         .then(response => response.text())

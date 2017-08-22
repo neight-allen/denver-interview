@@ -1,16 +1,73 @@
-# Chrome Extension Webpack Boilerplate
+# Workiva Denver Code Challenge
 
-A basic foundation boilerplate for rich Chrome Extensions using [Webpack](https://webpack.github.io/) to help you write modular and modern Javascript code, load CSS easily and [automatic reload the browser on code changes](https://webpack.github.io/docs/webpack-dev-server.html#automatic-refresh).
+Solution
 
-## Developing a new extension
-_I'll assume that you already read the [Webpack docs](https://webpack.github.io/docs) and the [Chrome Extension](https://developer.chrome.com/extensions/getstarted) docs._
+Time spent: ~10 hours
+
+## My thoughts
+
+### Some decisions I made
+
+#### Modular
+
+One of the things I love about writing javascript these days is that I can encapsulate things. I had worked with JS developers in the past that would use closures as semi-encapsulated code organization, and I liked that at the time, but JS is all grown up now. Let's make some modules!!
+
+I ended up with pretty DRY and hopefully readable code. And I got the `main` file down to 50 lines without obscuring too much of the logic.
+
+#### Funky singleton-like request class
+
+My `JiraApiRequest` class came out a little funky. Lots of getters. I'm not sure I've written a class like that before. It all came from the interface I wanted. To me, the URLs and paths are all data. So it didn't make sense for them to be methods. But they needed runtime logic to pull from the DOM. So, I end up with a bunch of getters, but also some properties that I just set in the constructor, because they won't be affected by user input.
+
+I'm also not totally sure how JS handles real singletons, or if it does at all. Probably could have googled that, but what I have isn't too bad.
+
+#### No Libraries
+
+Except for webpack. The production code has no dependencies.
+
+I'm usually a big fan of dependencies. Why duplicate work. However, when I got into the code, it seemed intentional that jQuery was not used for DOM traversal and manipulation. Also, since I've started my current job, our front-end instructors deliberately teach DOM and AJAX without jQuery, so I've learned it, and I figured I'd use it.
+
+I also considered a templating or view library, or even backbone, but since I wasn't using jQuery, and there's only two render functions anyway, I figured I'd just write some multi-line strings and put them in a render class.
+
+#### fetch
+
+It's just so much easier than `XMLHttpResponse`. And I know async/await is the new hotness, but I haven't had the chance to really get used to the workflow, so I just went with promises. You can see I like the procedural style of promise chaining.
+
+#### Styling
+
+I'm no css master by any means, but I wanted to at least get a little styling in there to establish that I'm not afraid of it.
+
+#### Tests
+
+We all need more of them, so I threw a few in. I've tried using selenium for real integration test a few times, and it's just such a hassle. It wouldn't have sped up my feedback loop on a small project like this, so it's really just unit tested.
+
+Also, as much as I see the value in test driving, I was really excited about getting in and modularizing it, and admittedly, the tests came last 😳.
+
+### Thoughts on the challenge
+
+#### Chrome extension
+
+I like challenges that use sort of obscure technologies. You can try to hire people that know the technologies you use, or you can hire people that can teach themselves technologies. Now, it turned out a chrome extension was easier to get up an running than I thought, but it's probably the right balance as to avoid false negatives.
+
+#### Inconsistent style
+
+I like that it forces you to A) know different ways to do the same thing in JS and B) make some decisions about which is the right style. I also found that there was some inconsistency in the UX. The "Query" button would give you detailed status as the AJAX request was working, but the feed would not. When playing with my work, I immediately recognized the cognitive dissonance, and set to fix it. That cognitive dissonance also occurs in the code, when you aren't consistent in style.
+
+#### Work simulation (or lack thereof)
+
+The hardest thing about hiring is getting someone in their natural work environment, before they're in the work environment. This job is about so much more than just coding. I've never seen a take home code challenge that really recreates the job. I guess it's intended as more of a filter and conversation starter anyway.
+
+I found myself making idealistic choices during this challenge. I was excited about the small scope. It allowed me to make decisions that I might on a greenfield project, without having to really deal with any legacy code, nor live with those decisions for long. However, legacy code is something we all deal with (except maybe [Chad Fowler](https://www.youtube.com/watch?v=-UKEPd2ipEk)). I know that I wouldn't have been able to completely rework the bones of this thing if I were on the job. And when I sent an email asking if I could, it was really only to communicate that I know that.
+
+I also found myself giving up on reasonable git workflow, since you didn't want a PR anyway 😜.
+
+## Developer Docs
+
+### Getting started
 
 1. Clone the repository.
 2. Install [yarn](https://yarnpkg.com): `npm install -g yarn`.
 3. Run `yarn`.
-4. Change the package's name and description on `package.json`.
-5. Change the name of your extension on `src/manifest.json`.
-6. Run `npm run start`
+6. Run `yarn start`
 7. Load your extension on Chrome following:
     1. Access `chrome://extensions/`
     2. Check `Developer mode`
@@ -18,86 +75,11 @@ _I'll assume that you already read the [Webpack docs](https://webpack.github.io/
     4. Select the `build` folder.
 8. Have fun.
 
-## Structure
-All your extension's development code must be placed in `src` folder, including the extension manifest.
+### Tools Used
 
-The boilerplate is already prepared to have a popup, a options page and a background page. You can easily customize this.
+- [Webpack](https://webpack.github.io/docs) - for modularizing javascript
+- [Chrome Extension Webpack Boilerplate](https://github.com/samuelsimoes/chrome-extension-webpack-boilerplate) - Just so I didn't have to do all the configuration of webpack from scratch. It was really easy to get started.
 
-Each page has its own [assets package defined](https://github.com/samuelsimoes/chrome-extension-webpack-boilerplate/blob/master/webpack.config.js#L16-L20). So, to code on popup you must start your code on `src/js/popup.js`, for example.
+### Usage
 
-You must use the [ES6 modules](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import) to a better code organization. The boilerplate is already prepared to that and [here you have a little example](https://github.com/samuelsimoes/chrome-extension-webpack-boilerplate/blob/master/src/js/popup.js#L2-L4).
-
-## Webpack auto-reload and HRM
-To make your workflow much more efficient this boilerplate uses the [webpack server](https://webpack.github.io/docs/webpack-dev-server.html) to development (started with `npm run server`) with auto reload feature that reloads the browser automatically every time that you save some file o your editor.
-
-You can run the dev mode on other port if you want. Just specify the env var `port` like this:
-
-```
-$ PORT=6002 npm run start
-```
-
-## Content Scripts
-
-Although this boilerplate uses the webpack dev server, it's also prepared to write all your bundles files on the disk at every code change, so you can point, on your extension manifest, to your bundles that you want to use as [content scripts](https://developer.chrome.com/extensions/content_scripts), but you need to exclude these entry points from hot reloading [(why?)](https://github.com/samuelsimoes/chrome-extension-webpack-boilerplate/issues/4#issuecomment-261788690). To do so you need to expose which entry points are content scripts on the `webpack.config.js` using the `chromeExtensionBoilerplate -> notHotReload` config. Look the example below.
-
-Let's say that you want use the `myContentScript` entry point as content script, so on your `webpack.config.js` you will configure the entry point and exclude it from hot reloading, like this:
-
-```js
-{
-  …
-  entry: {
-    myContentScript: "./src/js/myContentScript.js"
-  },
-  chromeExtensionBoilerplate: {
-    notHotReload: ["myContentScript"]
-  }
-  …
-}
-```
-
-and on your `src/manifest.json`:
-
-```json
-{
-  "content_scripts": [
-    {
-      "matches": ["https://www.google.com/*"],
-      "js": ["myContentScript.bundle.js"]
-    }
-  ]
-}
-
-```
-
-## Packing
-After the development of your extension run the command
-
-```
-$ NODE_ENV=production npm run build
-```
-Now, the content of `build` folder will be the extension ready to be submitted to the Chrome Web Store. Just take a look at the [official guide](https://developer.chrome.com/webstore/publish) to more infos about publishing.
-
-## Secrets
-If you are developing an extension that talks with some API you probably are using different keys for testing and production. Is a good practice you not commit your secret keys and expose to anyone that have access to the repository.
-
-To this task this boilerplate import the file `./secrets.<THE-NODE_ENV>.js` on your modules through the module named as `secrets`, so you can do things like this:
-
-_./secrets.development.js_
-
-```js
-export default { key: "123" };
-```
-
-_./src/popup.js_
-
-```js
-import secrets from "secrets";
-ApiCall({ key: secrets.key });
-```
-:point_right: The files with name `secrets.*.js` already are ignored on the repository.
-
-## With React.js
-:bulb: If you want use [React.js](https://facebook.github.io/react/) with this boilerplate, check the **[react branch](https://github.com/samuelsimoes/chrome-extension-webpack-boilerplate/tree/react)**.
-
--------------
-Samuel Simões ~ [@samuelsimoes](https://twitter.com/samuelsimoes) ~ [Blog](http://blog.samuelsimoes.com/)
+Click the

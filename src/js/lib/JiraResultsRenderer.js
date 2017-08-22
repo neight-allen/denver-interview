@@ -12,13 +12,14 @@ const entryToHTML = entry => {
 }
 
 const issueToHTML = issue => {
-  let statusClass = 'issue-' + issue.fields.status.name.toLowerCase()
+  let statusClass = 'issue-' + issue.fields.status.name.toLowerCase().replace(" ", "-")
   return `
   <div class='issue-card' data-issue-id='${issue.id}'>
+    <div class='issue-status ${statusClass}'>${issue.fields.status.name}</div>
     <div class='issue-key'>
       <a href='${issue.self}'>${issue.key}</a>
     </div>
-    <div class='issue-status ${statusClass}'>${issue.fields.status.name}</div>
+
     <p class='issue-summary'>${issue.fields.summary}</p>
   </div>`
 }

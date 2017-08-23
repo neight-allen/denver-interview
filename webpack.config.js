@@ -20,6 +20,7 @@ var options = {
   entry: {
     popup: path.join(__dirname, "src", "js", "popup.js"),
     options: path.join(__dirname, "src", "js", "options.js"),
+    test: "mocha-loader!" + path.join(__dirname, "test", "test.js"),
   },
   output: {
     path: path.join(__dirname, "build"),
@@ -67,6 +68,11 @@ var options = {
       template: path.join(__dirname, "src", "options.html"),
       filename: "options.html",
       chunks: ["options"]
+    }),
+    new HtmlWebpackPlugin({
+      template: path.join(__dirname, "test", "test.html"),
+      filename: "test.html",
+      chunks: ["test"]
     }),
     new WriteFilePlugin()
   ]
